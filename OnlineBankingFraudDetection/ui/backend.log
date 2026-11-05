@@ -1,0 +1,4 @@
+Fraud system API running at http://127.0.0.1:8765
+      >> ALERT #1001 [HIGH] HIGH_AMOUNT: Outgoing amount PKR 800,000.00 exceeds threshold PKR 500,000.00 (acct ACC5001, tx TXN-3502D636)
+      >> ALERT #1002 [MEDIUM] NEW_PAYEE_LARGE: PKR 800,000.00 to a recipient never paid before (AC8996) (acct ACC5001, tx TXN-3502D636)
+      >> ALERT #1003 [HIGH] EXTERNAL_LARGE_TRANSFER: PKR 800,000.00 to account AC8996 outside this bank (threshold PKR 200,000.00) (acct ACC5001, tx TXN-3502D636)

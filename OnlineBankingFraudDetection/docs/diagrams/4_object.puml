@@ -1,0 +1,54 @@
+@startuml
+title Object Diagram - Snapshot after Demo Steps 1 and 3
+object "bank : Bank" as bank {
+  name = "Demo Bank"
+}
+object "ali : Customer" as ali {
+  customerId = "CUS-1001"
+  fullName = "Ali Raza"
+}
+object "aliAcc : SavingsAccount" as aliAcc {
+  accountNumber = "ACC5001"
+  balance = 485000.0
+  homeCountry = "PK"
+}
+object "sara : Customer" as sara {
+  customerId = "CUS-1002"
+  fullName = "Sara Khan"
+}
+object "saraAcc : CurrentAccount" as saraAcc {
+  accountNumber = "ACC5002"
+  balance = 35000.0
+  overdraftLimit = 50000.0
+}
+object "tx1 : Transaction" as tx1 {
+  type = TRANSFER_OUT
+  amount = 15000.0
+  status = COMPLETED
+  riskScore = 0
+}
+object "tx3 : Transaction" as tx3 {
+  type = TRANSFER_OUT
+  amount = 650000.0
+  status = BLOCKED
+  riskScore = 40
+}
+object "alert1002 : Alert" as al {
+  ruleName = "HIGH_AMOUNT"
+  severity = HIGH
+}
+object "engine : FraudDetectionEngine" as eng
+object "highRule : HighAmountRule" as hr
+object "velRule : VelocityRule" as vr
+bank -- ali : customers
+bank -- aliAcc : accounts
+bank -- sara : customers
+bank -- saraAcc : accounts
+ali -- aliAcc : owns
+sara -- saraAcc : owns
+aliAcc *-- tx1 : history
+aliAcc *-- tx3 : history
+al -- tx3 : refers to
+eng -- hr : rules
+eng -- vr : rules
+@enduml

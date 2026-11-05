@@ -1,0 +1,40 @@
+@startuml
+title Sequence Diagram - Transfer with Fraud Screening
+actor Customer
+participant "Main" as UI
+participant "BankingService" as SVC
+participant "Bank" as BANK
+participant "FraudDetectionEngine" as ENG
+participant "FraudRule" as RULE
+participant "AlertPublisher" as PUB
+participant "AuditLogObserver" as AUD
+participant "Source : Account" as SRC
+participant "Target : Account" as TGT
+Customer -> UI : enter from, to, amount
+UI -> SVC : transfer(from, to, amount, loc, when)
+SVC -> BANK : getAccount(from)
+BANK --> SVC : source
+SVC -> BANK : getAccount(to)
+BANK --> SVC : target
+SVC -> ENG : assess(tx, source)
+loop for each rule
+  ENG -> RULE : evaluate(tx, source)
+  RULE --> ENG : Optional<Alert>
+end
+ENG --> SVC : RiskAssessment(alerts, score, decision)
+loop for each alert
+  SVC -> PUB : publish(alert)
+  PUB -> AUD : onAlert(alert)
+end
+alt decision == BLOCK
+  SVC -> SRC : recordTransaction(tx BLOCKED)
+  SVC --> UI : tx (BLOCKED)
+else decision ALLOW or FLAG
+  SVC -> SRC : debit(amount)
+  SVC -> TGT : deposit(amount)
+  SVC -> TGT : recordTransaction(TRANSFER_IN)
+  SVC -> SRC : recordTransaction(tx COMPLETED)
+  SVC --> UI : tx (COMPLETED)
+end
+UI --> Customer : outcome and risk score
+@enduml

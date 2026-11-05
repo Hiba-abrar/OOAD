@@ -1,0 +1,39 @@
+@startuml
+title Activity Diagram - Outgoing Transaction Processing
+start
+:Receive transfer / withdrawal request;
+:Resolve source (and target) account;
+if (Account exists?) then (no)
+  :Throw AccountNotFoundException;
+  stop
+else (yes)
+endif
+:Create Transaction (PENDING);
+:Run all FraudRules against transaction;
+:Publish each raised Alert to observers;
+:Compute risk score and Decision;
+if (Decision == BLOCK?) then (yes)
+  :Set status BLOCKED;
+  :Record transaction in source history;
+  :Return blocked transaction;
+  stop
+else (no)
+endif
+if (Sufficient funds / overdraft?) then (no)
+  :Set status FAILED;
+  :Record transaction in source history;
+  :Throw InsufficientFundsException;
+  stop
+else (yes)
+endif
+:Debit source account;
+if (Transfer to another account?) then (yes)
+  :Credit target account;
+  :Record TRANSFER_IN in target history;
+else (no)
+endif
+:Set status COMPLETED;
+:Record transaction in source history;
+:Return transaction;
+stop
+@enduml

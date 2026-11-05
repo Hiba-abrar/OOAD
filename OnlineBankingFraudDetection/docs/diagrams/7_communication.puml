@@ -1,0 +1,22 @@
+@startuml
+title Communication Diagram - Transfer Collaboration (numbered messages)
+object "ui : Main" as ui
+object "bank : Bank" as bank
+object "svc : BankingService" as svc
+object "eng : FraudDetectionEngine" as eng
+object "rule : FraudRule" as rule
+object "pub : AlertPublisher" as pub
+object "audit : AuditLogObserver" as audit
+object "src : Account (source)" as src
+object "tgt : Account (target)" as tgt
+
+ui -right-> svc : 1: transfer(from, to, amt, loc, when)
+svc -up-> bank : 2: getAccount(from)\n3: getAccount(to)
+svc -right-> eng : 4: assess(tx, src)
+eng -right-> rule : 5: evaluate(tx, src)
+svc -down-> pub : 6: publish(alert)
+pub -right-> audit : 7: onAlert(alert)
+svc -down-> src : 8: debit(amount)\n10: recordTransaction(tx)
+src -[hidden]right-> tgt
+svc -right-> tgt : 9: deposit(amount)
+@enduml

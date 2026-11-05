@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+actor "Customer" as C
+actor "Bank Officer" as O
+actor "Fraud Analyst" as F
+rectangle "Online Banking Fraud Detection & Monitoring System" {
+  usecase "Open Account" as UC1
+  usecase "Deposit Funds" as UC2
+  usecase "Withdraw Funds" as UC3
+  usecase "Transfer Funds" as UC4
+  usecase "View Statement" as UC5
+  usecase "Screen Transaction\n(fraud check)" as UC6
+  usecase "View Fraud Alerts" as UC7
+}
+C --> UC2
+C --> UC3
+C --> UC4
+C --> UC5
+O --> UC1
+O --> UC5
+F --> UC7
+UC3 ..> UC6 : <<include>>
+UC4 ..> UC6 : <<include>>
+UC6 ..> UC7 : <<extend>>
+@enduml

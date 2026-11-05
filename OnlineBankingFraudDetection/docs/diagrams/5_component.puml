@@ -1,0 +1,41 @@
+@startuml
+title Component Diagram
+skinparam componentStyle uml2
+package "Presentation" {
+  [Main (Console UI)] as UI
+  [DemoScenario] as DEMO
+}
+package "Composition" {
+  [BankingSystem] as SYS
+}
+package "Service Layer" {
+  [BankingService] as SVC
+  [Bank] as BANK
+}
+package "Fraud Detection" {
+  [FraudDetectionEngine] as ENG
+  [Fraud Rules] as RULES
+}
+package "Monitoring" {
+  [AlertPublisher] as PUB
+  [ConsoleAlertObserver] as CON
+  [AuditLogObserver] as AUD
+}
+package "Domain Model" {
+  [Account Hierarchy] as MODEL
+  [Account Factory] as FAC
+}
+UI --> SYS
+DEMO --> SYS
+SYS --> SVC : provides
+SVC --> BANK
+SVC --> ENG : screens with
+SVC --> PUB : publishes via
+ENG --> RULES
+PUB --> CON
+PUB --> AUD
+SVC --> MODEL
+BANK --> FAC
+FAC --> MODEL
+RULES --> MODEL
+@enduml

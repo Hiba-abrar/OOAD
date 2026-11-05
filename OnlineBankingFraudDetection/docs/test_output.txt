@@ -1,0 +1,65 @@
+Note: src/main/java/com/obfds/validation/InputValidator.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Build successful.
+PASS  Factory creates SavingsAccount for SAVINGS
+PASS  Factory creates CurrentAccount for CURRENT
+PASS  Savings debit above (balance - minimum) is rejected
+PASS  Savings debit down to minimum balance succeeds
+PASS  Current account may overdraw up to the overdraft limit
+PASS  HighAmountRule raises HIGH for 600,000
+PASS  HighAmountRule raises CRITICAL for 1,200,000
+PASS  HighAmountRule ignores small amounts
+PASS  ForeignLocationRule flags transaction from AE for PK account
+PASS  ForeignLocationRule ignores domestic transaction
+PASS  UnusualHourRule flags 150,000 at 02:00
+PASS  UnusualHourRule ignores 150,000 at 12:00
+PASS  VelocityRule flags the 6th outgoing transaction in 10 minutes
+PASS  VelocityRule ignores transactions outside the window
+PASS  Engine ALLOWs a routine transaction
+PASS  Engine FLAGs a medium-severity transaction
+PASS  Engine BLOCKs a high-severity transaction
+PASS  Engine risk score adds HIGH_AMOUNT and NEW_PAYEE_LARGE weights
+PASS  Blocked transfer is recorded with status BLOCKED
+PASS  Blocked transfer does not change sender balance
+PASS  Blocked transfer does not change receiver balance
+PASS  Completed transfer has status COMPLETED
+PASS  Sender balance reduced by transfer amount
+PASS  Receiver balance increased by transfer amount
+PASS  Sender history holds a TRANSFER_OUT entry
+PASS  Receiver history holds a TRANSFER_IN entry
+PASS  Observer receives the HIGH_AMOUNT alert
+PASS  Unknown account number throws AccountNotFoundException
+PASS  Negative deposit is rejected
+PASS  Customer aggregates the account opened for them
+PASS  Self-transfer is flagged (status COMPLETED, risk = MEDIUM)
+PASS  Self-transfer leaves the balance unchanged
+PASS  Transfer to an account outside the bank completes
+PASS  Outside transfer is marked as external
+PASS  Outside transfer debits the sender
+PASS  Outside transfer does not credit any local account
+PASS  Large transfer to an outside account is BLOCKED
+PASS  Blocked outside transfer leaves balance unchanged
+PASS  First payment to a new recipient is flagged
+PASS  Second payment to the same recipient is not flagged as new payee
+PASS  Transfer to a random account number works (case-insensitive)
+PASS  Recipient with invalid characters is rejected
+PASS  Recipient number that is too short is rejected
+PASS  Every fraud rule has a description for the UI
+PASS  Self-transfer #1 is flagged
+PASS  Self-transfer #2 is flagged
+PASS  Self-transfer #3 is BLOCKED
+PASS  Very large transfer from another country is flagged (not blocked)
+PASS  Customer name containing digits is rejected
+PASS  Valid customer name with dot and apostrophe is accepted
+PASS  CNIC with 13 digits is rejected
+PASS  CNIC with 4 digits is rejected
+PASS  CNIC with letters is rejected
+PASS  CNIC of exactly 5 digits is accepted
+PASS  Amount with letters is rejected
+PASS  Amount with scientific notation is rejected
+PASS  Negative amount is rejected
+PASS  Amount with commas is accepted
+PASS  Non-existent country code is rejected
+PASS  Valid country code is accepted with its name
+
+Results: 60 passed, 0 failed

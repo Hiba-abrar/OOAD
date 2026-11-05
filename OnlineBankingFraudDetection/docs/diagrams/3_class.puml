@@ -1,0 +1,142 @@
+@startuml
+title Class Diagram - Online Banking Fraud Detection & Monitoring System
+hide empty members
+enum AccountType {
+  SAVINGS
+  CURRENT
+}
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER_OUT
+  TRANSFER_IN
+  +isOutgoing() : boolean
+}
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  BLOCKED
+  FAILED
+}
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+  +getWeight() : int
+}
+enum Decision {
+  ALLOW
+  FLAG
+  BLOCK
+}
+class Customer {
+  -customerId : String
+  -fullName : String
+  -nationalId : String
+  +addAccount(a : Account)
+  +getMaskedNationalId() : String
+}
+abstract class Account {
+  -accountNumber : String
+  -homeCountry : String
+  -balance : double
+  +deposit(amount : double)
+  +debit(amount : double)
+  +recordTransaction(t : Transaction)
+  {abstract} #availableForDebit() : double
+  {abstract} +getType() : AccountType
+}
+class SavingsAccount {
+  +MINIMUM_BALANCE : double
+  #availableForDebit() : double
+}
+class CurrentAccount {
+  -overdraftLimit : double
+  #availableForDebit() : double
+}
+class Transaction {
+  -transactionId : String
+  -amount : double
+  -location : String
+  -timestamp : LocalDateTime
+  -riskScore : int
+  +setStatus(s : TransactionStatus)
+}
+class Alert {
+  -alertId : long
+  -ruleName : String
+  -message : String
+  +getSeverity() : Severity
+}
+class AccountFactory {
+  {static} +create(type : AccountType, ...) : Account
+}
+interface FraudRule {
+  +getName() : String
+  +evaluate(t : Transaction, a : Account) : Optional
+}
+class HighAmountRule
+class VelocityRule
+class ForeignLocationRule
+class UnusualHourRule
+class FraudDetectionEngine {
+  -rules : List
+  +withDefaultRules() : FraudDetectionEngine
+  +addRule(r : FraudRule)
+  +assess(t : Transaction, a : Account) : RiskAssessment
+}
+class RiskAssessment {
+  -riskScore : int
+  -decision : Decision
+}
+interface AlertObserver {
+  +onAlert(a : Alert)
+}
+class AlertPublisher {
+  -observers : List
+  +subscribe(o : AlertObserver)
+  +publish(a : Alert)
+}
+class ConsoleAlertObserver
+class AuditLogObserver {
+  +countBySeverity(s : Severity) : long
+}
+class Bank {
+  -customers : Map
+  -accounts : Map
+  +registerCustomer(n : String, id : String) : Customer
+  +openAccount(cid : String, t : AccountType, b : double, c : String) : Account
+  +getAccount(no : String) : Account
+}
+class BankingService {
+  +deposit(no : String, amt : double) : Transaction
+  +withdraw(no : String, amt : double, loc : String, when : LocalDateTime) : Transaction
+  +transfer(from : String, to : String, amt : double, loc : String, when : LocalDateTime) : Transaction
+}
+Account <|-- SavingsAccount
+Account <|-- CurrentAccount
+FraudRule <|.. HighAmountRule
+FraudRule <|.. VelocityRule
+FraudRule <|.. ForeignLocationRule
+FraudRule <|.. UnusualHourRule
+AlertObserver <|.. ConsoleAlertObserver
+AlertObserver <|.. AuditLogObserver
+Customer "1" o-- "0..*" Account : owns
+Bank o-- "0..*" Customer : aggregates
+Bank o-- "0..*" Account : aggregates
+Account *-- "0..*" Transaction : history (composition)
+Alert o-- Transaction : refers to
+Alert --> Severity
+Transaction --> TransactionType
+Transaction --> TransactionStatus
+Account --> AccountType
+AccountFactory ..> Account : creates
+FraudDetectionEngine o-- "0..*" FraudRule : strategies
+FraudDetectionEngine ..> RiskAssessment : returns
+RiskAssessment --> Decision
+AlertPublisher o-- "0..*" AlertObserver : notifies
+BankingService --> Bank
+BankingService --> FraudDetectionEngine
+BankingService --> AlertPublisher
+@enduml

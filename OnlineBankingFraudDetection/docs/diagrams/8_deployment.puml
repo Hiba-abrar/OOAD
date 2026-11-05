@@ -1,0 +1,16 @@
+@startuml
+title Deployment Diagram
+node "Staff / Lab Workstation" {
+  artifact "fraud-system.jar" as JAR
+  node "Java Runtime Environment 17+" as JRE {
+    component "Online Banking Fraud Detection and Monitoring System" as APP
+  }
+}
+node "Operator Terminal (stdin / stdout)" as TERM
+TERM --> APP : menu commands
+JAR ..> APP : deployed as
+note bottom of JRE
+  In-memory state only.
+  No external database required.
+end note
+@enduml
